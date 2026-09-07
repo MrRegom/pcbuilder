@@ -23,16 +23,6 @@ SEARCHABLE_TYPES = [
 ]
 
 
-def home(request):
-    featured = Product.objects.filter(component_type=ComponentType.PREBUILT_PC, in_stock=True).order_by("?")[:6]
-    stats = {
-        "total": Product.objects.count(),
-        "en_stock": Product.objects.filter(in_stock=True).count(),
-        "categorias": Product.objects.values("component_type").distinct().count(),
-    }
-    return render(request, "catalog/home.html", {"featured": featured, "stats": stats})
-
-
 def _apply_filters(qs, params):
     q = params.get("q", "").strip()
     if q:

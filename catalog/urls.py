@@ -5,7 +5,7 @@ from . import views
 app_name = "catalog"
 
 urlpatterns = [
-    path("", views.home, name="home"),
+    path("", views.builder, name="home"),
     path("buscador/", views.search, name="search"),
     path("armador/", views.builder, name="builder"),
     path("api/productos/", views.api_products, name="api_products"),
