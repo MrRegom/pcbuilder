@@ -3,7 +3,8 @@ __pycache__/
 *.sqlite3
 db.sqlite3
 .env
-staticfiles/
 media/
 *.log
 .DS_Store
+# staticfiles/ SI se versiona a proposito: Vercel no corre collectstatic en el
+# build de Python, asi que se commitean ya generados para que whitenoise los sirva.

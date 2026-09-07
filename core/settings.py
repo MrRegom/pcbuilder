@@ -10,7 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+import os
 from pathlib import Path
+
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,10 +23,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-=f==$ub&67a%rt_-*m6ycy5!-hp)5=3zh*(%9bh#*o88@s(1rw'
+# En Vercel, define SECRET_KEY como variable de entorno (Project Settings -> Environment Variables).
+SECRET_KEY = os.environ.get(
+    'SECRET_KEY', 'django-insecure-=f==$ub&67a%rt_-*m6ycy5!-hp)5=3zh*(%9bh#*o88@s(1rw'
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# Localmente sigue en True (no cambia tu flujo de desarrollo). En Vercel, define
+# DJANGO_DEBUG=False como variable de entorno.
+DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = ['*']
 
@@ -42,6 +50,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -73,12 +82,14 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
+# Localmente usa SQLite (sin variables de entorno). En Vercel, define DATABASE_URL
+# apuntando a tu Postgres (Vercel Storage -> Postgres, o Neon/Supabase) y se usa esa.
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        default=f'sqlite:///{BASE_DIR / "db.sqlite3"}',
+        conn_max_age=600,
+    )
 }
 
 
@@ -118,6 +129,18 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# whitenoise sirve los estaticos directamente desde la app WSGI: no se necesita
+# un servidor de archivos aparte, algo clave en un entorno serverless como Vercel.
+STORAGES = {
+    'default': {
+        'BACKEND': 'django.core.files.storage.FileSystemStorage',
+    },
+    'staticfiles': {
+        'BACKEND': 'whitenoise.storage.CompressedStaticFilesStorage',
+    },
+}
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
