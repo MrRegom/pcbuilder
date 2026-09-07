@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Armador de PC — Invasión Gamer{% endblock %}
+
+{% block content %}
+<section class="builder-hero builder-hero--google">
+  <div class="wrap google-center">
+    <img class="google-logo-img" src="{% static 'img/logo.png' %}" alt="Invasión Gamer">
+
+    <div class="glow-search-wrap">
+      <div class="glow-search-row">
+        <svg class="glow-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input type="text" id="t-texto" autocomplete="off" placeholder="ej: quiero jugar fortnite, tengo 500 lucas">
+        <button class="glow-search-btn" id="t-submit" type="button" aria-label="Buscar mi PC">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="mode-tabs mode-tabs--google">
+      <button class="mode-tab is-active" data-mode="recomendado" type="button">Recomiéndame un equipo</button>
+      <button class="mode-tab" data-mode="piezas" type="button">Armar por piezas</button>
+    </div>
+  </div>
+</section>
+
+<div class="wrap section">
+  <section class="mode-panel is-active" id="mode-recomendado">
+    <div id="t-response" class="chat-response" hidden>
+      <div class="chat-notes" id="t-notes"></div>
+      <div class="grid-cards" id="t-results"></div>
+    </div>
+
+    <details class="manual-toggle">
+      <summary>O ajusta presupuesto y uso manualmente</summary>
+      <div class="recommend-form">
+        <div class="filter-group">
+          <label for="r-presupuesto">Presupuesto (CLP)</label>
+          <input type="number" id="r-presupuesto" placeholder="ej: 1200000" step="10000" min="0">
+        </div>
+        <div class="filter-group">
+          <label for="r-uso">¿Para qué lo vas a usar?</label>
+          <select id="r-uso">
+            <option value="gaming_1080p">Gaming 1080p</option>
+            <option value="gaming_1440p">Gaming 1440p</option>
+            <option value="gaming_4k">Gaming 4K / máximo rendimiento</option>
+            <option value="oficina">Oficina / uso general</option>
+          </select>
+        </div>
+        <button class="btn btn-outline" id="r-submit" type="button">Recomendar equipos</button>
+      </div>
+      <div class="grid-cards" id="r-results"></div>
+    </details>
+  </section>
+
+  <section class="mode-panel" id="mode-piezas">
+    <div class="builder-layout">
+      <div class="builder-steps" id="builder-steps"></div>
+      <aside class="builder-summary" id="builder-summary">
+        <h2>Tu configuración</h2>
+        <div id="summary-items"></div>
+        <div class="summary-total">Total: <strong id="summary-total">$0</strong></div>
+        <div id="summary-warnings"></div>
+        <a class="btn btn-primary btn-block" id="whatsapp-cta" target="_blank" rel="noopener" hidden>Enviar por WhatsApp</a>
+      </aside>
+    </div>
+
+    <div class="picker-overlay" id="picker-overlay" hidden>
+      <div class="picker-modal">
+        <div class="picker-header">
+          <h3 id="picker-title">Elegir</h3>
+          <button type="button" id="picker-close" class="btn-icon">✕</button>
+        </div>
+        <div class="grid-cards" id="picker-options"></div>
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %}
+
+{% block extra_head %}
+{{ steps|json_script:"builder-steps-data" }}
+<script defer src="{% static 'js/builder.js' %}"></script>
+{% endblock %}

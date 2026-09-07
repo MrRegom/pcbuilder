@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load catalog_extras %}
+{% block title %}Invasión Gamer — Prototipo de catálogo{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="wrap hero-inner">
+    <h1>Encuentra o arma tu PC en segundos</h1>
+    <p class="lede">Dile qué necesitas con tus propias palabras y te mostramos la configuración ideal de tu catálogo actual — sin inteligencia artificial, sin inventar precios ni stock.</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="{% url 'catalog:builder' %}">Buscar mi PC</a>
+    </div>
+    <div class="hero-stats">
+      <div><strong>{{ stats.total }}</strong><span>productos indexados</span></div>
+      <div><strong>{{ stats.en_stock }}</strong><span>con stock disponible</span></div>
+      <div><strong>{{ stats.categorias }}</strong><span>categorías estructuradas</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="wrap section">
+  <h2>Productos destacados</h2>
+  <div class="grid-cards">
+    {% for p in featured %}
+    <a class="card" href="{{ p.source_url }}" target="_blank" rel="noopener">
+      <div class="card-media">
+        {% if p.discount_pct > 0 %}<span class="card-badge-corner badge-discount">-{{ p.discount_pct }}% OFF</span>{% endif %}
+        {% if p.image_url %}<img src="{{ p.image_url }}" alt="{{ p.name }}" loading="lazy">{% endif %}
+      </div>
+      <div class="card-body">
+        <span class="card-brand">{{ p.brand|default:"Invasión Gamer" }}</span>
+        <h3>{{ p.name }}</h3>
+        <span class="card-price">{{ p.price_low|clp }}</span>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

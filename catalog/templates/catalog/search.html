@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Buscador avanzado — Invasión Gamer{% endblock %}
+
+{% block content %}
+<div class="wrap search-layout">
+  <aside class="filters" id="filters">
+    <h2>Filtros</h2>
+
+    <div class="filter-group">
+      <label for="f-q">Buscar</label>
+      <input type="search" id="f-q" placeholder="ej: rtx 5060, ryzen, teclado...">
+    </div>
+
+    <div class="filter-group">
+      <label for="f-tipo">Categoría</label>
+      <select id="f-tipo">
+        <option value="">Todas</option>
+        {% for value, label in types %}
+        <option value="{{ value }}">{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="f-marca">Marca</label>
+      <select id="f-marca">
+        <option value="">Todas</option>
+        {% for b in brands %}
+        <option value="{{ b }}">{{ b }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label>Precio (CLP)</label>
+      <div class="price-inputs">
+        <input type="number" id="f-precio-min" placeholder="Mín" min="0" step="1000">
+        <span>—</span>
+        <input type="number" id="f-precio-max" placeholder="Máx" min="0" step="1000">
+      </div>
+    </div>
+
+    <div class="filter-group filter-check">
+      <label><input type="checkbox" id="f-stock" checked> Solo con stock</label>
+    </div>
+
+    <div class="filter-group">
+      <label for="f-orden">Ordenar por</label>
+      <select id="f-orden">
+        <option value="relevancia">Relevancia</option>
+        <option value="precio_asc">Precio: menor a mayor</option>
+        <option value="precio_desc">Precio: mayor a menor</option>
+        <option value="nombre">Nombre A-Z</option>
+      </select>
+    </div>
+
+    <button class="btn btn-outline btn-block" id="f-reset" type="button">Limpiar filtros</button>
+  </aside>
+
+  <section class="results">
+    <div class="results-header">
+      <span id="result-count">Cargando…</span>
+    </div>
+    <div class="grid-cards" id="result-grid"></div>
+    <div class="load-more-wrap">
+      <button class="btn btn-outline" id="load-more" type="button" hidden>Cargar más resultados</button>
+    </div>
+  </section>
+</div>
+{% endblock %}
+
+{% block extra_head %}
+<script defer src="{% static 'js/search.js' %}"></script>
+{% endblock %}

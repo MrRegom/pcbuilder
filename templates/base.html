@@ -1,0 +1,48 @@
+{% load static %}<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Invasión Gamer — Catálogo{% endblock %}</title>
+<link rel="stylesheet" href="{% static 'css/style.css' %}?v=12">
+{% block extra_head %}{% endblock %}
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="{% url 'catalog:home' %}">
+      <img class="brand-mark-img" src="{% static 'img/logo.png' %}" alt="Invasión Gamer">
+      <span class="brand-name">Invasión Gamer<span class="brand-tag">Catálogo &amp; Armador — prototipo</span></span>
+    </a>
+    <nav class="main-nav">
+      <a href="{% url 'catalog:builder' %}">Armador de PC</a>
+      <a href="https://invasiongamer.com" target="_blank" rel="noopener">Tienda original ↗</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+{% block content %}{% endblock %}
+</main>
+
+<div class="fullscreen-loading" id="fullscreen-loading" hidden>
+  <div class="fsl-content">
+    <div class="fsl-radar">
+      <span class="fsl-ring fsl-ring-1"></span>
+      <span class="fsl-ring fsl-ring-2"></span>
+      <span class="fsl-ring fsl-ring-3"></span>
+      <img class="fsl-mark" src="{% static 'img/logo.png' %}" alt="">
+    </div>
+    <div class="fsl-title">Buscando en Invasión Gamer</div>
+    <div class="fsl-text" id="fsl-text">Leyendo tu mensaje…</div>
+    <div class="fsl-bar"><div class="fsl-bar-fill"></div></div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p><strong>Prototipo interno</strong> construido sobre datos públicos de invasiongamer.com para evaluar una propuesta de buscador por texto y armador de PC sin IA. No es un sitio oficial de Invasión Gamer.</p>
+  </div>
+</footer>
+</body>
+</html>
