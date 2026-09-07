@@ -82,14 +82,18 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-# Localmente usa SQLite (sin variables de entorno). En Vercel, define DATABASE_URL
-# apuntando a tu Postgres (Vercel Storage -> Postgres, o Neon/Supabase) y se usa esa.
+# Localmente usa SQLite (sin variables de entorno). En Vercel, crea una Postgres
+# (Storage -> Postgres, o la integracion de Neon) y usa la variable que te haya
+# dejado disponible: se prueban los nombres mas comunes, en este orden.
+_DB_URL = (
+    os.environ.get('DATABASE_URL')
+    or os.environ.get('POSTGRES_URL')
+    or os.environ.get('POSTGRES_PRISMA_URL')
+    or f'sqlite:///{BASE_DIR / "db.sqlite3"}'
+)
 
 DATABASES = {
-    'default': dj_database_url.config(
-        default=f'sqlite:///{BASE_DIR / "db.sqlite3"}',
-        conn_max_age=600,
-    )
+    'default': dj_database_url.parse(_DB_URL, conn_max_age=600)
 }
 
 
