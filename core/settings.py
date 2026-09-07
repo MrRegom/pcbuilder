@@ -82,19 +82,38 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-# Localmente usa SQLite (sin variables de entorno). En Vercel, crea una Postgres
-# (Storage -> Postgres, o la integracion de Neon) y usa la variable que te haya
-# dejado disponible: se prueban los nombres mas comunes, en este orden.
-_DB_URL = (
+#
+# Prioridad:
+# 1. Si hay DATABASE_URL/POSTGRES_URL/POSTGRES_PRISMA_URL (Postgres real), se usa esa.
+# 2. Si no, y estamos corriendo en Vercel (variable de sistema VERCEL=1), se usa el
+#    db.sqlite3 versionado en el repo, abierto en modo INMUTABLE. El filesystem de
+#    una funcion serverless es de solo lectura; "immutable=1" le dice a SQLite que
+#    no intente crear un archivo de journal, algo que rompe en solo-lectura. Esta
+#    app no escribe nada en produccion (solo lecturas), asi que funciona.
+# 3. Localmente (ninguna de las anteriores), SQLite normal de lectura/escritura.
+_db_url = (
     os.environ.get('DATABASE_URL')
     or os.environ.get('POSTGRES_URL')
     or os.environ.get('POSTGRES_PRISMA_URL')
-    or f'sqlite:///{BASE_DIR / "db.sqlite3"}'
 )
 
-DATABASES = {
-    'default': dj_database_url.parse(_DB_URL, conn_max_age=600)
-}
+if _db_url:
+    DATABASES = {'default': dj_database_url.parse(_db_url, conn_max_age=600)}
+elif os.environ.get('VERCEL'):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': f'file:{BASE_DIR / "db.sqlite3"}?mode=ro&immutable=1',
+            'OPTIONS': {'uri': True},
+        }
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 # Password validation
